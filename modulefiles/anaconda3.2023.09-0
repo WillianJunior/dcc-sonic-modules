@@ -1,0 +1,55 @@
+#%Module1.0#####################################################################
+##
+## anaconda 2023.09-0 modulefile
+##
+## from: https://www.blopig.com/blog/2023/03/the-ultimate-modulefile-for-conda/
+proc ModulesHelp { } {
+        puts stderr "\tMake anaconda available. You must create your own local environment using 'conda create --prefix /my/personal/path/condaenv'."
+}
+
+module-whatis   "adds Anaconda 2023.09-0"
+
+# set variables within this code: env variables from shell are called via <code>$env(...)</code>
+set root /opt/anaconda/anaconda3-2023-09-0
+set userhome $env(HOME)
+set userconda $env(HOME)/.conda
+
+conflict conda
+
+# conda deactivate on unload
+if {[module-info command unload]} {system AUTO_ACTIVATE_BASE=false $root/bin/conda deactivate}
+
+# add envs (on unload they will be unset or replaced)
+prepend-path    MANPATH        $root/man
+prepend-path    MANPATH        $root/share/man
+prepend-path    PATH        $root/bin
+prepend-path    PATH        $root/sbin
+prepend-path    PKG_CONFIG_PATH        $root/lib/pkgconfig
+
+# `python install -u` by default
+setenv PYTHONUSERBASE   $userhome/.local
+
+# user created envs go here:
+setenv CONDA_ENVS_PATH    $userconda/envs
+setenv JUPYTER_CONFIG_PATH $userhome/.jupyter
+
+# base config for jupyter.
+setenv JUPYTER_CONFIG_DIR $root/.jupyter
+
+# CONDA_ENVS_DIR is not the base config
+# if not using a $CONDA_ENVS_PATH environment variables can do the job
+setenv CONDARC    $userhome/.conda
+setenv    CONDA_SOLVER    libmamba
+setenv CONDA_YES    true
+setenv CONDA_CHANNELS "conda-forge"
+
+# etc.
+if {[module-info command load]} {
+    # give hits to the user
+    system touch $env(HOME)/.condarc
+    system mkdir -p $userconda/envs
+    system mkdir -p $userhome/.local
+    system mkdir -p $userhome/.jupyter
+    # enable
+    puts stdout "source $root/etc/profile.d/conda.sh ;"
+}

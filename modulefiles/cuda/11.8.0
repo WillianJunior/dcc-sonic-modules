@@ -1,0 +1,29 @@
+#%Module1.0#####################################################################
+##
+## CUDA modulefile
+##
+proc ModulesHelp { } {
+        global version
+
+        puts stderr "\tSets up environment for CUDA v$version\n"
+}
+
+module-whatis   "sets up environment for CUDA 11.8.0"
+
+if { [ is-loaded cuda ] } {
+module unload cuda
+}
+
+# for Tcl script use only
+set     version 11.8.0
+set     root    /usr/local/cuda-${version}
+
+setenv  CUDA_HOME       $root
+
+prepend-path     PATH    $root/bin
+prepend-path     MANPATH $root/doc/man
+prepend-path     LD_LIBRARY_PATH $root/lib64
+prepend-path    LD_LIBRARY_PATH $root/extras/CUPTI/lib64
+
+conflict cuda
+set-alias nvcc $root/bin/nvcc

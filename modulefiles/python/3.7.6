@@ -1,0 +1,13 @@
+#%Module1.0#####################################################################
+##
+## python3.7.6 modulefile
+##
+proc ModulesHelp { } {
+        puts stderr "\tAdds Python 3.7.6 to your PATH environment variable.\nIt should be called through 'python' instead of 'python3'."
+}
+
+module-whatis   "adds Python 3.7.6"
+
+prepend-path    PATH    /opt/python/3-7-6/bin
+conflict        python
+set-alias       python python3.7
