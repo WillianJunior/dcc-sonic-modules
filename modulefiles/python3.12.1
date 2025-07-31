@@ -1,0 +1,13 @@
+#%Module1.0#####################################################################
+##
+## python3.12.1 modulefile
+##
+proc ModulesHelp { } {
+        puts stderr "\tAdds Python 3.12.1 to your PATH environment variable.\nIt should be called through 'python' instead of 'python3'."
+}
+
+module-whatis   "adds Python 3.12.1"
+
+prepend-path    PATH    /opt/modules/python/3-12-1/bin
+conflict        python
+set-alias       python python3.12
